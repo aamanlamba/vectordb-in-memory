@@ -11,7 +11,6 @@ from langchain.llms import OpenAI
 
 import os
 import textwrap
-os.environ["OPENAI_API_KEY"] = "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"
 
 
 def print_hi(name):
@@ -32,7 +31,7 @@ if __name__ == "__main__":
     )
     docs = text_splitter.split_documents(documents)
    # print(docs[0])
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY"))
     # Create FAISS vectorstore in memory
     vectorstore = FAISS.from_documents(docs, embeddings)
     vectorstore.save_local("faiss_index_react")
@@ -42,6 +41,6 @@ if __name__ == "__main__":
         llm=OpenAI(), chain_type="stuff", retriever=new_vectorstore.as_retriever()
     )
     prompt1 = "Give me a summary of ReAct in 5 sentences"
-    prompt2 = "Give me a summary of Lifecycle Assessment in 5 sentences"
+    prompt2 = "Give me the features of Lifecycle Assessment in 5 sentences"
     res = qa.run(prompt2)
     print (textwrap.fill(res,80))
